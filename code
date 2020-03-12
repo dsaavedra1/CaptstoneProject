@@ -1,0 +1,464 @@
+library(dplyr)
+library(xts)
+
+#install.packages('xts')
+
+data<-read.csv('data3.csv',header = T)
+class(data)
+dim(data)
+
+summary(data)
+data$Peticion<-NULL
+unique(data$Entidad)
+
+# clean regular expresion in Localidad
+library(stringr)
+data$Localidad<-str_replace_all(data$Localidad,'[:digit:]|[:punct:]','')%>%
+  str_to_upper() ##make lowercase
+
+
+library(ggplot2)
+#install.packages('ggthemes')
+library(ggthemes)
+
+ggplot(data, aes(Sector)) + geom_bar()+
+  theme(axis.text.x = element_text(angle = 90))+coord_flip()
+
+ggplot(data, aes(Canal)) + geom_bar()+
+  theme(axis.text.x = element_text(angle = 90))
+
+ggplot(data, aes(Entidad)) + geom_bar()
+
+
+
+# Filter the most important Sector 
+nlevels(data$Sector)
+data %>% 
+  group_by(Sector) %>%
+  summarise(no_rows = length(Sector))%>%
+  arrange(desc(no_rows))
+
+
+
+
+
+# Filter the most important institution 
+nlevels(data$Entidad)
+data %>% 
+  group_by(Entidad) %>%
+  summarise(no_rows = length(Entidad))%>%
+  arrange(desc(no_rows))
+
+
+# Filter the most important institution 
+nlevels(data$Dependencia)
+data %>% 
+  group_by(Dependencia) %>%
+  summarise(no_rows = length(Dependencia))%>%
+  arrange(desc(no_rows))
+
+# Filter the most important institution 
+nlevels(data$Tema)
+data %>% 
+  group_by(Tema) %>%
+  summarise(no_rows = length(Tema))%>%
+  arrange(desc(no_rows))
+
+# Filter the most important institution 
+nlevels(data$Localidad)
+data %>% 
+  group_by(Localidad) %>%
+  summarise(no_rows = length(Localidad))%>%
+  arrange(desc(no_rows))
+
+# Filter the most important institution 
+nlevels(data$Canal)
+data %>% 
+  group_by(Canal) %>%
+  summarise(no_rows = length(Canal))%>%
+  arrange(desc(no_rows))
+
+# Filter the most important Tipo de Peticion
+nlevels(data$TipoPeticion)
+data %>% 
+  group_by(TipoPeticion) %>%
+  summarise(no_rows = length(TipoPeticion))%>%
+  arrange(desc(no_rows))
+
+
+# Filter the most important Tipo de Peticion
+nlevels(data$EstadoInicial)
+data %>% 
+  group_by(EstadoInicial) %>%
+  summarise(no_rows = length(EstadoInicial))%>%
+  arrange(desc(no_rows))
+
+
+# Filter the most important Tipo de Peticion
+nlevels(data$EstadoFinal)
+data %>% 
+  group_by(EstadoFinal) %>%
+  summarise(no_rows = length(EstadoFinal))%>%
+  arrange(desc(no_rows))
+
+
+
+
+
+
+##################################
+
+######### FIX TIME SERIES
+
+#################################
+
+
+library(zoo)
+library('lubridate')
+
+data$FechaIngreso<-as.Date(data$FechaIngreso)
+data$FechaVencimiento<-as.Date(data$FechaVencimiento)
+data$FechaFinalizacion<-as.Date(data$FechaFinalizacion)
+data$FechaCierre<-as.Date(data$FechaCierre)
+
+
+
+###########      FECHA DE INGRESO FOR DAYS TO YEAR    #####################
+
+
+data$day<- factor(day(data$FechaIngreso))
+data$month <- factor(month(data$FechaIngreso, label = TRUE))
+data$year <- factor(year(data$FechaIngreso))
+data$dayofweek <- factor(wday(data$FechaIngreso, label = TRUE))
+
+# Visualize days
+library(dplyr)
+day_data <- data %>%
+  group_by(day) %>%
+  summarize(Total = n()) 
+# To build datatable()
+#install.packages('DT')
+library(DT)
+datatable(day_data)
+library(ggplot2)
+ggplot(day_data,aes(day,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Ingreso by Month Date")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+# Visualize months
+library(dplyr)
+month_data <- data %>%
+  group_by(month) %>%
+  summarize(Total = n()) 
+# To build datatable()
+#install.packages('DT')
+library(DT)
+datatable(month_data)
+library(ggplot2)
+ggplot(month_data,aes(month,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Ingreso by Month")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Visualize months
+library(dplyr)
+dayofweek_data <- data %>%
+  group_by(dayofweek) %>%
+  summarize(Total = n()) 
+# To build datatable()
+#install.packages('DT')
+library(DT)
+datatable(dayofweek_data)
+library(ggplot2)
+ggplot(dayofweek_data,aes(dayofweek,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Ingreso by Month Week Day")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+# Visualize Year
+library(dplyr)
+year_data <- data %>%
+  group_by(year) %>%
+  summarize(Total = n()) 
+# To build datatable()
+library(DT)
+datatable(year_data)
+library(ggplot2)
+ggplot(year_data,aes(year,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Ingreso by Year")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+# Year and month Heat MAP
+month_year_group<-data %>%
+  group_by(year, month) %>%
+  summarize(Total = n())
+
+ggplot(month_year_group, aes(month, year, fill = Total)) +
+  geom_tile(color = "white") +ggtitle("Heat Map by Month and Year")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+summary(data)
+
+
+
+
+
+
+
+
+################      FECHA DE VENCIMIENTO FOR DAYS TO YEAR    #####################
+
+library('lubridate')
+data$dayFv<- factor(day(data$FechaVencimiento))
+data$monthFv <- factor(month(data$FechaVencimiento, label = TRUE))
+data$yearFv <- factor(year(data$FechaVencimiento))
+data$dayofweekFv <- factor(wday(data$FechaVencimiento, label = TRUE))
+
+# Visualize days
+library(dplyr)
+day_dataFv <- data %>%
+  group_by(dayFv) %>%
+  summarize(Total = n()) 
+# To build datatable()
+
+library(DT)
+datatable(day_dataFv)
+library(ggplot2)
+ggplot(day_dataFv,aes(dayFv,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Vencimiento by Month Date")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+# Visualize months
+library(dplyr)
+month_dataFv <- data %>%
+  group_by(monthFv) %>%
+  summarize(Total = n()) 
+# To build datatable()
+library(DT)
+datatable(month_dataFv)
+library(ggplot2)
+ggplot(month_dataFv,aes(monthFv,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Vencimiento by Month")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Visualize months
+library(dplyr)
+dayofweek_dataFv <- data %>%
+  group_by(dayofweekFv) %>%
+  summarize(Total = n()) 
+# To build datatable()
+
+library(DT)
+datatable(dayofweek_dataFv)
+library(ggplot2)
+ggplot(dayofweek_dataFv,aes(dayofweekFv,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Vencimiento by Month Week Day")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+# Visualize Year
+library(dplyr)
+year_dataFv <- data %>%
+  group_by(yearFv) %>%
+  summarize(Total = n()) 
+# To build datatable()
+
+library(DT)
+datatable(year_dataFv)
+library(ggplot2)
+ggplot(year_dataFv,aes(yearFv,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Vencimiento by Year")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+# Year and month Heat MAP
+month_year_groupFv<-data %>%
+  group_by(yearFv, monthFv) %>%
+  summarize(Total = n())
+
+ggplot(month_year_groupFv, aes(monthFv, yearFv, fill = Total)) +
+  geom_tile(color = "white") +ggtitle("Heat Map by Month and Year")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+
+
+
+
+
+
+
+
+
+
+################      FECHA DE FINALIZACION FOR DAYS TO YEAR    #####################
+
+library('lubridate')
+data$dayFF<- factor(day(data$FechaFinalizacion))
+data$monthFF <- factor(month(data$FechaFinalizacion, label = TRUE))
+data$yearFF <- factor(year(data$FechaFinalizacion))
+data$dayofweekFF <- factor(wday(data$FechaFinalizacion, label = TRUE))
+
+# Visualize days
+library(dplyr)
+day_dataFF <- data %>%
+  group_by(dayFF) %>%
+  summarize(Total = n()) 
+# To build datatable()
+
+library(DT)
+datatable(day_dataFF)
+library(ggplot2)
+ggplot(day_dataFF,aes(dayFF,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Finalizacion by Month Date")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+# Visualize months
+library(dplyr)
+month_dataFF <- data %>%
+  group_by(monthFF) %>%
+  summarize(Total = n()) 
+# To build datatable()
+
+library(DT)
+datatable(month_dataFF)
+library(ggplot2)
+ggplot(month_dataFF,aes(monthFF,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Finalizacion by Month")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Visualize months
+library(dplyr)
+dayofweek_dataFF <- data %>%
+  group_by(dayofweekFF) %>%
+  summarize(Total = n()) 
+# To build datatable()
+
+library(DT)
+datatable(dayofweek_dataFF)
+library(ggplot2)
+ggplot(dayofweek_dataFF,aes(dayofweekFF,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Finalizacion by Month Week Day")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+# Visualize Year
+library(dplyr)
+year_dataFF <- data %>%
+  group_by(yearFF) %>%
+  summarize(Total = n()) 
+# To build datatable()
+
+library(DT)
+datatable(year_dataFF)
+library(ggplot2)
+ggplot(year_dataFF,aes(yearFF,Total))+geom_bar(stat = 'identity')+
+  ggtitle("Fecha de Finalizacion by Year")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+# Year and month Heat MAP
+month_year_groupFF<-data %>%
+  group_by(yearFF, monthFF) %>%
+  summarize(Total = n())
+
+# The Heat map shows that months previous to the change
+# of a new administration speed up the finalizacion of claims
+ggplot(month_year_groupFF, aes(monthFF, yearFF, fill = Total)) +
+  geom_tile(color = "white") +ggtitle("Heat Map by Month and Year")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+##############################################################################
+
+
+#data$dayFF<- as.numeric(data$dayFF)
+#data$dayFv<- as.numeric(data$dayFv)
+#data$dayFFFV<-data$dayFF-data$dayFv
+#table(data$dayFFFV)
+#span<-data$FechaFinalizacion %--% data$FechaVencimiento 
+#time.duration<-as.duration(span)
+#time.duration
+#time.period <- as.period(span)
+#time.period
+
+
+data$dayFFFV<-difftime(data$FechaFinalizacion,data$FechaVencimiento, units = "day")
+
+
+
+
+
+
+# Filter the most important ddffvf
+
+dayFFFVLoca<-data %>% 
+  group_by(Localidad) %>%
+  summarise(no_rows = length(dayFFFV))%>%
+  arrange(desc(no_rows))
+
+dayFFFVLoca<- dayFFFVLoca[-c(1),] 
+dayFFFVLoca<- dayFFFVLoca[-c(21),] 
+
+names(dayFFFVLoca)<-c('Localidad','daytosolve')
+
+
+
+
+#####################      MAPS CREATION       ##############################
+#install.packages('pacman')
+#pacman::p_load(leaflet, glue, dplyr, sf, tmap, tmaptools, tidycensus, ggmap, htmltools,
+#               htmlwidgets)
+
+#install.packages('leaflet')
+#install.packages('glue')
+#install.packages('dplyr')
+#install.packages('sf')
+#install.packages('tmap')
+#install.packages('tmaptools')
+#install.packages('tidycensus')
+#install.packages('ggmap')
+#install.packages('htmltools')
+
+library(tmap)
+library(ggplot2)
+library(sf)
+Bogolocal<- st_read("localidades/localidades.shp")
+
+ttm()
+tmap_last()
+qtm(Bogolocal, fill = "NOMBRE")
+
+# tm_shape(ca_income) +
+#  tm_polygons(col = "Median.Income", id = "County")
+
+
+
+################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
