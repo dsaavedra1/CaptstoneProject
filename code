@@ -21,14 +21,22 @@ library(ggplot2)
 #install.packages('ggthemes')
 library(ggthemes)
 
-ggplot(data, aes(Sector)) + geom_bar()+
-  theme(axis.text.x = element_text(angle = 90))+coord_flip()
+ggplot(data, aes(Sector))+geom_bar(fill="#00526D")+coord_flip()+
+  labs(title="Sector Frequency Distribution ") + labs(x="Sector")+
+  labs(y="Count")+ 
+  coord_flip()+theme_economist() + scale_colour_economist()
+  
+  
 
-ggplot(data, aes(Canal)) + geom_bar()+
-  theme(axis.text.x = element_text(angle = 90))
+ggplot(data, aes(Canal)) +geom_bar(fill="#00526D")+coord_flip()+
+  labs(title="Number of Comunication Channels ") + labs(x="Canal")+
+  labs(y="Count")+ 
+  coord_flip()+theme_economist() + scale_colour_economist()
 
-ggplot(data, aes(Entidad)) + geom_bar()
 
+ggplot(data, aes(Entidad))+geom_bar(fill="#00526D")+
+  labs(title="Number of Entidades ") + labs(x="Entidad")+
+  labs(y="Count")+theme_economist() + scale_colour_economist()
 
 
 # Filter the most important Sector 
@@ -141,9 +149,13 @@ day_data <- data %>%
 library(DT)
 datatable(day_data)
 library(ggplot2)
-ggplot(day_data,aes(day,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Ingreso by Month Date")+
-  theme(plot.title = element_text(hjust = 0.5))
+ggplot(day_data,aes(day,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Ingreso by Month Date") + 
+  labs(x="Localidad")+labs(y="Mean Days")+theme_economist() +
+  scale_colour_economist()
+  
+  
+  
 
 
 
@@ -157,9 +169,10 @@ month_data <- data %>%
 library(DT)
 datatable(month_data)
 library(ggplot2)
-ggplot(month_data,aes(month,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Ingreso by Month")+
-  theme(plot.title = element_text(hjust = 0.5))
+ggplot(month_data, aes(month,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Ingreso by Month") + labs(x="Month")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
+
 
 # Visualize months
 library(dplyr)
@@ -171,9 +184,9 @@ dayofweek_data <- data %>%
 library(DT)
 datatable(dayofweek_data)
 library(ggplot2)
-ggplot(dayofweek_data,aes(dayofweek,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Ingreso by Month Week Day")+
-  theme(plot.title = element_text(hjust = 0.5))
+ggplot(dayofweek_data, aes(dayofweek,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Ingreso by Month Week Day ") + labs(x="Day of the Week")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
 
 
 
@@ -186,10 +199,9 @@ year_data <- data %>%
 library(DT)
 datatable(year_data)
 library(ggplot2)
-ggplot(year_data,aes(year,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Ingreso by Year")+
-  theme(plot.title = element_text(hjust = 0.5))
-
+ggplot(year_data, aes(year,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Ingreso by Year ") + labs(x="Year")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
 
 # Year and month Heat MAP
 month_year_group<-data %>%
@@ -227,9 +239,11 @@ day_dataFv <- data %>%
 library(DT)
 datatable(day_dataFv)
 library(ggplot2)
-ggplot(day_dataFv,aes(dayFv,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Vencimiento by Month Date")+
-  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(day_dataFv, aes(dayFv,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Vencimiento by Month Date") + labs(x="Day ")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
+
 
 
 
@@ -242,9 +256,11 @@ month_dataFv <- data %>%
 library(DT)
 datatable(month_dataFv)
 library(ggplot2)
-ggplot(month_dataFv,aes(monthFv,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Vencimiento by Month")+
-  theme(plot.title = element_text(hjust = 0.5))
+ggplot(month_dataFv, aes(monthFv,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Vencimiento by Month") + labs(x="Month ")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
+
+
 
 # Visualize months
 library(dplyr)
@@ -253,12 +269,13 @@ dayofweek_dataFv <- data %>%
   summarize(Total = n()) 
 # To build datatable()
 
-library(DT)
+# library(DT)
 datatable(dayofweek_dataFv)
 library(ggplot2)
-ggplot(dayofweek_dataFv,aes(dayofweekFv,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Vencimiento by Month Week Day")+
-  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(dayofweek_dataFv, aes(dayofweekFv,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Vencimiento by Month Week Day ") + labs(x=" Day of the Week ")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
 
 
 
@@ -269,12 +286,15 @@ year_dataFv <- data %>%
   summarize(Total = n()) 
 # To build datatable()
 
-library(DT)
+# library(DT)
 datatable(year_dataFv)
-library(ggplot2)
-ggplot(year_dataFv,aes(yearFv,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Vencimiento by Year")+
-  theme(plot.title = element_text(hjust = 0.5))
+# library(ggplot2)
+ggplot(year_dataFv, aes(yearFv,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Vencimiento by Year ") + labs(x=" Year ")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
+
+
+
 
 
 # Year and month Heat MAP
@@ -313,58 +333,63 @@ day_dataFF <- data %>%
   summarize(Total = n()) 
 # To build datatable()
 
-library(DT)
+# library(DT)
 datatable(day_dataFF)
-library(ggplot2)
-ggplot(day_dataFF,aes(dayFF,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Finalizacion by Month Date")+
-  theme(plot.title = element_text(hjust = 0.5))
+# library(ggplot2)
+ggplot(day_dataFF, aes(dayFF,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Vencimiento by Year ") + labs(x=" Month Date ")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
+
+
 
 
 
 # Visualize months
-library(dplyr)
+#library(dplyr)
 month_dataFF <- data %>%
   group_by(monthFF) %>%
   summarize(Total = n()) 
 # To build datatable()
 
-library(DT)
+#library(DT)
 datatable(month_dataFF)
-library(ggplot2)
-ggplot(month_dataFF,aes(monthFF,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Finalizacion by Month")+
-  theme(plot.title = element_text(hjust = 0.5))
+#library(ggplot2)
+ggplot(month_dataFF, aes(monthFF,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Finalizacion by Month ") + labs(x=" Month ")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
+
+
 
 # Visualize months
-library(dplyr)
+# library(dplyr)
 dayofweek_dataFF <- data %>%
   group_by(dayofweekFF) %>%
   summarize(Total = n()) 
 # To build datatable()
 
-library(DT)
+#library(DT)
 datatable(dayofweek_dataFF)
-library(ggplot2)
-ggplot(dayofweek_dataFF,aes(dayofweekFF,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Finalizacion by Month Week Day")+
-  theme(plot.title = element_text(hjust = 0.5))
+#library(ggplot2)
+ggplot(dayofweek_dataFF, aes(dayofweekFF,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Finalizacion by Month Week Day ") + labs(x=" Week Day ")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
+
 
 
 
 # Visualize Year
-library(dplyr)
+#library(dplyr)
 year_dataFF <- data %>%
   group_by(yearFF) %>%
   summarize(Total = n()) 
 # To build datatable()
 
-library(DT)
+#library(DT)
 datatable(year_dataFF)
-library(ggplot2)
-ggplot(year_dataFF,aes(yearFF,Total))+geom_bar(stat = 'identity')+
-  ggtitle("Fecha de Finalizacion by Year")+
-  theme(plot.title = element_text(hjust = 0.5))
+#library(ggplot2)
+ggplot(year_dataFF, aes(yearFF,Total))+geom_bar(stat = 'identity',fill="#00526D")+
+  labs(title="Fecha de Finalizacion by Year") + labs(x=" Year ")+
+  labs(y="Total")+theme_economist() + scale_colour_economist()
 
 
 # Year and month Heat MAP
@@ -393,26 +418,53 @@ ggplot(month_year_groupFF, aes(monthFF, yearFF, fill = Total)) +
 #time.period
 
 
-data$dayFFFV<-difftime(data$FechaFinalizacion,data$FechaVencimiento, units = "day")
+data$dayFFFV<-difftime(data$FechaVencimiento,data$FechaFinalizacion, units = "day")
 
 
+# Filter the mean of days by Localidad
+dayFVFFlocaMean<-data %>% 
+  group_by(Localidad) %>%
+  summarise(no_rows = mean(dayFFFV))%>%
+  arrange(desc(no_rows))
+
+dayFVFFlocaMean<- dayFVFFlocaMean[-c(8),] 
+dayFVFFlocaMean<- dayFVFFlocaMean[-c(21),] 
+
+names(dayFVFFlocaMean)<-c('Localidad','AverDaySolve')
 
 
-
-
-# Filter the most important ddffvf
-
-dayFFFVLoca<-data %>% 
+# Filter and count days by Localidad
+dayFVFFLocaCount<-data %>% 
   group_by(Localidad) %>%
   summarise(no_rows = length(dayFFFV))%>%
   arrange(desc(no_rows))
 
-dayFFFVLoca<- dayFFFVLoca[-c(1),] 
-dayFFFVLoca<- dayFFFVLoca[-c(21),] 
+dayFVFFLocaCount<- dayFVFFLocaCount[-c(1),] 
+dayFVFFLocaCount<- dayFVFFLocaCount[-c(21),] 
 
-names(dayFFFVLoca)<-c('Localidad','daytosolve')
+dayFVFFLocaCount$CodLoc<-c('11','13','8','19','10',
+                      '1','7','14','16','18',
+                      '2','4','3','9','12',
+                      '5','6','17','15','20')
+dayFFFVLoca$CodLoc<-as.integer(dayFFFVLoca$CodLoc)
+
+names(dayFVFFLocaCount)<-c('Localidad','daytosolve','CodLoc')
+dayFFFVLoca[18,1]<-'CANDELARIA'
+dayFFFVLoca[19,1]<-'ANTONIO NARIÑO'
 
 
+ggplot(dayFVFFLocaCount,aes(Localidad,daytosolve))+geom_bar(stat = 'identity')+
+  geom_bar(stat = 'identity',fill="#00526D")+coord_flip()+
+  labs(title="Count Days To Finalize Claim ") + labs(x="Localidad")+
+  labs(y="Number of Days")+ theme_economist() + scale_colour_economist() 
+
+  
+ggplot(dayFVFFlocaMean,aes(Localidad,AverDaySolve))+
+  geom_bar(stat = 'identity',fill="#00526D")+coord_flip()+
+  labs(title="Average Days To Finalize Claim ") + labs(x="Localidad")+
+  labs(y="Mean Days")+ 
+  coord_flip()+theme_economist() + scale_colour_economist()
+  
 
 
 #####################      MAPS CREATION       ##############################
@@ -434,6 +486,20 @@ library(tmap)
 library(ggplot2)
 library(sf)
 Bogolocal<- st_read("localidades/localidades.shp")
+
+str(Bogolocal)
+
+Bogolocal$CODIGO_LOC<-as.integer(Bogolocal$CODIGO_LOC)
+
+common_local <- union(Bogolocal$CODIGO_LOC, dayFFFVLoca$CodLoc)
+length(common_local) == length(Bogolocal$CODIGO_LOC)
+
+BogdayFFFV<-merge(Bogolocal,dayFFFVLoca,by=c("CODIGO_LOC","CodLoc"))
+
+
+BogdayFFFV<- merge(x=Bogolocal, y=dayFFFVLoca, by.x=c("CODIGO_LOC"), 
+            by.y=c("CodLoc"), all.y=TRUE)
+
 
 ttm()
 tmap_last()
@@ -461,4 +527,52 @@ qtm(Bogolocal, fill = "NOMBRE")
 
 
 
+##################                             ############################    
+            ##     Rank Features by Importance    ##
 
+
+# ensure results are repeatable
+set.seed(7)
+# load the library
+#install.packages('mlbench')
+#install.packages('caret')
+library(mlbench)
+library(caret)
+
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+# train the model
+model <- train(dayFFFV~., data=data, method="lvq", preProcess="scale", trControl=control)
+# estimate variable importance
+importance <- varImp(model, scale=FALSE)
+# summarize importance
+print(importance)
+# plot importance
+plot(importance)
+
+
+
+data2<-sample_n(data, size =300000 , replace = T)
+data2$FechaIngreso<-NULL
+data2$FechaVencimiento<-NULL
+data2$FechaFinalizacion<-NULL
+data2$FechaCierre<-NULL
+data2$dayFFFV<-factor(data2$dayFFFV)
+
+
+
+control <- trainControl(method="cv", number=10)
+
+# train the model
+model <- train(dayFFFV~., data=data2, method="lvq", preProcess="scale", trControl=control)
+
+# estimate variable importance
+importance <- varImp(model, scale=FALSE)
+
+# summarize importance
+print(importance)
+
+# plot importance
+plot(importance)
+
+dim(data)
